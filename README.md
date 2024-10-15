@@ -1,4 +1,4 @@
-# grafana-as-code
+# Grafana-as-Code GitOps + ArgoCD 3>
 
 Grafana sidecar will able to discover:
 * Configure, Dashboards, Connectors, Alerts, DataSources via helm using Grafana sidecar
