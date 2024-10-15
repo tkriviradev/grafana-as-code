@@ -1,0 +1,11 @@
+apiVersion: 1
+contactPoints:
+    - orgId: 1
+      name: test333
+      receivers:
+        - uid: bdzzu1791pvcxf
+          type: slack
+          settings:
+            recipient: '#test3333'
+            token: sda2132test3333
+          disableResolveMessage: false

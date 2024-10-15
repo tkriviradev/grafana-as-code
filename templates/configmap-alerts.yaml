@@ -1,0 +1,20 @@
+{{- $files := .Files }}
+{{- $Release_Name := ( printf "%s" .Release.Name ) }}
+{{- $Release_Name := .Release.Name }}
+{{- $namespace := .Release.Namespace }}
+{{- $common_labels := include "grafana.labels" . | nindent 4 }}
+{{- $component_labels := include "contact_points.labels" . | nindent 4 }}
+{{ range $path, $_ :=  .Files.Glob  "alerts/**.yaml" }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $Release_Name }}-{{ $path | trimSuffix ".yaml" | replace "/" "-" }}
+  namespace: {{ $namespace }}
+  labels:
+    {{- $common_labels }}
+    {{- $component_labels }}
+data:
+  {{ $path | replace "/" "-" }}: |
+  {{- $.Files.Get $path | nindent 4 }}
+---
+  {{- end }}

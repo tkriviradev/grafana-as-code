@@ -1,0 +1,95 @@
+extraAnnotations:
+  # some_annotation: value
+  argocd.argoproj.io/sync-options: Replace=true
+
+# Apply extra labels to common labels.
+extraLabels: {}
+  # grafana_dashboard: operated
+
+createConfigmap: true
+
+## Configure grafana datasources
+## ref: http://docs.grafana.org/administration/provisioning/#datasources
+##
+labels_datasources:
+  grafana_datasource: "true"
+
+datasources:
+ datasources.yaml:
+   apiVersion: 1
+   datasources:
+   - name: loki01
+     type: loki
+     uid: 1
+     url:  http://gateway.loki.svc.cluster.local
+     access: proxy
+     editable: true
+     isDefault: false
+     tlsSkipVerify: true
+   - name: prom01
+     type: prometheus
+     uid: 2
+     url: http://k8s-prometheus-prometheus.monitoring.svc:9090
+     access: proxy
+     editable: true
+     isDefault: false
+   - name: "prom02"
+     type: prometheus
+     uid: 3
+     url: https://prometheus.<your fqdn>
+     access: proxy
+     editable: true
+     isDefault: true
+   - name: "alertmanager"
+     type: alertmanager
+     implementation: prometheus
+     uid: 4
+     url: https://alertmanager.<your fqdn>
+     access: proxy
+     editable: true
+     isDefault: false
+     jsonData:
+      implementation: prometheus
+      handleGrafanaManagedAlerts: true
+   - name: CloudWatch
+     type: cloudwatch
+     access: proxy
+     uid: 5
+     editable: false
+     jsonData:
+       authType: default
+       defaultRegion: us-east-1
+   deleteDatasources: []
+
+## Configure grafana dashboard to import
+## NOTE: To use dashboards you must also enable/configure dashboardProviders
+## ref: https://grafana.com/dashboards
+##
+## dashboards per provider, use provider name as key.
+##
+labels_dashboards:
+  grafana_dashboards: "true"
+
+dashboards:
+  infrastructure:
+    node-exporter-full:
+      title: "Infra / Node-Exporter-Full"
+      file: dashboards/infrastructure/1860_rev37.json
+      folder: infrastructure
+  infrastructure1:
+    core-dns:
+      title: "Infra / Core-DNS"
+      file: dashboards/infrastructure/14981_rev2.json
+      folder: infrastructure
+
+labels_contactpoints:
+  grafana_alerts: "true"
+
+# Alerts and ContactPoints are collected as files directly from folder contact-points
+# Each file will be converted to ConfigMap (This is required in order to preserve exact yaml structure)
+contactpoints: {}
+alerts: {}
+
+## Number of old ReplicaSets to retain
+##
+revisionHistoryLimit: 3

@@ -1,0 +1,20 @@
+{{- if .Values.createConfigmap -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "grafana.fullname" . }}-datasources
+  namespace: {{ include "grafana.namespace" . }}
+  labels:
+    {{- include "grafana.labels" . | nindent 4 }}
+    {{- with .Values.labels_datasources }}
+    {{ toYaml . }}
+    {{- end }}
+  {{- if or .Values.configMapAnnotations .Values.annotations }}
+  annotations:
+    {{- with .Values.extraAnnotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- end }}
+data:
+  {{- include "grafana.configDataSource" . | nindent 2 -}}
+{{- end -}}
