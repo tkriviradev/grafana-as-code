@@ -1,5 +1,9 @@
 # grafana-as-code
-Configure, Dashboards, Connectors, Alerts, DataSources via helm using Grafana sidecar
+
+Grafana sidecar will able to discover:
+* Configure, Dashboards, Connectors, Alerts, DataSources via helm using Grafana sidecar
+
+## This helm-chart can be used as Team independent way of deploying and updating their dashboards and alerts.
 
 ## Mission
 
